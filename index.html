@@ -11,6 +11,14 @@
     <title>OA System</title>
     <link rel=icon href=//cdn.jsdelivr.net/gh/Miazzy/yunwisdoms@v1.3.1.K/logo.ico>
     <link rel=stylesheet href=//cdn.jsdelivr.net/gh/Miazzy/yunwisdoms@v1.3.1.K/index.css>
+    <script>
+        //http协议
+        let protocol = window.location.host.includes('localhost') ? 'http:' : 'https:';
+        //刷新切换
+        if (window.location.href !== protocol + '//' + window.location.host + '/') {
+            window.location.href = protocol + '//' + window.location.host;
+        }
+    </script>
     <script src=//cdn.jsdelivr.net/gh/Miazzy/yunwisdoms@v1.3.1.K/cdn/babel-polyfill/polyfill.min.js></script>
     <script src=//cdn.jsdelivr.net/gh/Miazzy/yunwisdoms@v1.3.1.K/cdn/dayjs/dayjs.min.js></script>
     <script src=//cdn.jsdelivr.net/gh/Miazzy/yunwisdoms@v1.3.1.K/cdn/vue/vue.min.js></script>
