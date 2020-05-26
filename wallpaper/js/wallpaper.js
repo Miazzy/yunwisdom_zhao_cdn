@@ -172,17 +172,17 @@ function contAdd(html) {
     });
 }
 
-// 获取真实查询API
+//获取真实URL
 function queryRealURL(cid = '', start = 0, count = 10) {
     switch (cid) {
         case '360new': // 360壁纸 新图片
-            return `https://wallpaper.apc.360.cn/index.php?c=WallPaper&a=getAppsByOrder&order=create_time&start=${start}&count=${count}&from=360chrome`;
+            return `https://gogs.shengtai.club/image?cid=360new&start=${start}&count=${count}`;
         case '360tags':
-            return `https://cdn.apc.360.cn/index.php?c=WallPaper&a=getAllCategoriesV2&from=360chrome`;
+            return `https://gogs.shengtai.club/category`;
         case 'bing':
-            return `https://cn.bing.com/HPImageArchive.aspx?format=js&idx=${start-1}&n=${count}`;
+            return `https://gogs.shengtai.club/bing?start=${start}&count=${count}`;
         default:
-            return `https://wallpaper.apc.360.cn/index.php?c=WallPaper&a=getAppsByCategory&cid=${cid}&start=${start}&count=${count}&from=360chrome`;
+            return `https://gogs.shengtai.club/image?cid=${cid}&start=${start}&count=${count}`;
     }
 }
 
@@ -191,7 +191,7 @@ function ajaxBingWal(start, count) {
     $.ajax({
         type: "GET",
         url: queryRealURL('bing', start, count),
-        dataType: "jsonp",
+        dataType: "json",
         success: function(jsonData) {
             var newHtml = '<link rel="stylesheet" href="css/onepage-scroll.css">',
                 downUrl = '';
@@ -265,23 +265,26 @@ function ajax360Wal(cid, start, count) {
     $("#loadmore").html('努力加载中……');
     $("#loadmore").show();
     jigsaw.ajaxing = true;
-    $.ajax({
-        type: "GET",
-        url: queryRealURL(cid, start, count),
-        dataType: "jsonp",
-        success: function(jsonData) {
-            for (var i = 0; i < jsonData.data.length; i++) {
-                addJigsaw(jsonData.data[i].url, decode360Tag(jsonData.data[i].tag));
+    if (cid = '360new') {
+
+    } else if ()
+        $.ajax({
+            type: "GET",
+            url: queryRealURL(cid, start, count),
+            dataType: "json",
+            success: function(jsonData) {
+                for (var i = 0; i < jsonData.data.length; i++) {
+                    addJigsaw(jsonData.data[i].url, decode360Tag(jsonData.data[i].tag));
+                }
+                resizeHeight();
+                jigsaw.ajaxing = false;
+                if (jsonData.data.length === 0) {
+                    $("#loadmore").html('所有的壁纸都已经加载完啦！');
+                } else {
+                    $("#loadmore").hide();
+                }
             }
-            resizeHeight();
-            jigsaw.ajaxing = false;
-            if (jsonData.data.length === 0) {
-                $("#loadmore").html('所有的壁纸都已经加载完啦！');
-            } else {
-                $("#loadmore").hide();
-            }
-        }
-    });
+        });
     return true;
 }
 

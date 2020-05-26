@@ -128,18 +128,34 @@ const initLayout = (that) => {
         });
         that.linkList.push(window.musicKey);
     }
+    //是否存在路径标识,检查pageList中是否含有window.companyPanKey
+    flag = window.__.find(that.pageList, item => {
+        return item.path == window.companyPanKey;
+    });
+    if (flag == null || typeof flag == "undefined") {
+        that.pageList.push({
+            name: "company-disk-center",
+            path: window.companyPanKey,
+            fullPath: window.companyPanKey,
+            meta: {
+                icon: "disk",
+                title: "公司云盘"
+            }
+        });
+        that.linkList.push(window.companyPanKey);
+    }
     //是否存在路径标识,检查pageList中是否含有window.yunpanKey
     flag = window.__.find(that.pageList, item => {
         return item.path == window.yunpanKey;
     });
     if (flag == null || typeof flag == "undefined") {
         that.pageList.push({
-            name: "disk-center",
+            name: "person-disk-center",
             path: window.yunpanKey,
             fullPath: window.yunpanKey,
             meta: {
                 icon: "disk",
-                title: "云盘中心"
+                title: "个人云盘"
             }
         });
         that.linkList.push(window.yunpanKey);
@@ -160,6 +176,22 @@ const initLayout = (that) => {
         });
         that.linkList.push(window.sourceKey);
     }
+    //是否存在路径标识,检查pageList中是否含有window.wallKey
+    flag = window.__.find(that.pageList, item => {
+        return item.path == window.wallKey;
+    });
+    if (flag == null || typeof flag == "undefined") {
+        that.pageList.push({
+            name: "wall-center",
+            path: window.wallKey,
+            fullPath: window.wallKey,
+            meta: {
+                icon: "wall",
+                title: "壁纸中心"
+            }
+        });
+        that.linkList.push(window.wallKey);
+    }
     if (
         that.$route.fullPath != window.indexKey &&
         that.$route.fullPath != window.workplaceKey &&
@@ -168,8 +200,10 @@ const initLayout = (that) => {
         that.$route.fullPath != window.taskKey &&
         that.$route.fullPath != window.documentKey &&
         that.$route.fullPath != window.docKey &&
+        that.$route.fullPath != window.companyPanKey &&
         that.$route.fullPath != window.yunpanKey &&
         that.$route.fullPath != window.sourceKey &&
+        that.$route.fullPath != window.wallKey &&
         that.$route.fullPath != window.musicKey
     ) {
         that.pageList.push(that.$route);
@@ -182,9 +216,22 @@ const initLayout = (that) => {
     that.$root.$tabs = that;
     that.$root.$tabs.closeTab = that.$options.methods.closeTabPage;
 
+    //初始化样式
+    initCss();
 }
 
 window.initLayout = initLayout;
+
+const initCss = () => {
+    setTimeout(() => {
+        //设置样式
+        try {
+            $('.ant-tabs.ant-tabs-card .ant-tabs-tab').css('cssText', 'padding: 0px 14px !important; margin-right: 7px !important; ');
+        } catch (error) {
+            console.log(error);
+        }
+    }, 150);
+}
 
 const removeLayout = (key, that) => {
     if (that.checkClosePageValid(key)) {
@@ -362,12 +409,20 @@ const checkClosePageValidLayout = (key, that) => {
         that.$message.warning("音乐中心不能关闭!");
         return false;
     }
+    if (key == window.companyPanKey) {
+        that.$message.warning("公司云盘不能关闭!");
+        return false;
+    }
     if (key == window.yunpanKey) {
-        that.$message.warning("云盘中心不能关闭!");
+        that.$message.warning("个人云盘不能关闭!");
         return false;
     }
     if (key == window.sourceKey) {
         that.$message.warning("资料仓库不能关闭!");
+        return false;
+    }
+    if (key == window.wallKey) {
+        that.$message.warning("壁纸中心不能关闭!");
         return false;
     }
     if (that.$root.$tabs.pageList.length === 1) {
@@ -378,6 +433,26 @@ const checkClosePageValidLayout = (key, that) => {
 }
 
 window.checkClosePageValidLayout = checkClosePageValidLayout;
+
+const closeTabLayout = (key, that) => {
+    let flag = checkClosePageValidLayout(key, that);
+    if (flag == true) {
+        that.$root.$tabs.pageList = that.$root.$tabs.pageList.filter(
+            item => item.fullPath !== key
+        );
+        let index = that.$root.$tabs.linkList.indexOf(key);
+        that.$root.$tabs.linkList = that.$root.$tabs.linkList.filter(
+            item => item !== key
+        );
+        index =
+            index >= that.$root.$tabs.linkList.length ?
+            that.$root.$tabs.linkList.length - 1 :
+            index;
+        that.$root.$tabs.activePage = that.$root.$tabs.linkList[index];
+    }
+}
+
+window.closeTabLayout = closeTabLayout;
 
 const toggleTopMenuLayout = () => {
     try {
