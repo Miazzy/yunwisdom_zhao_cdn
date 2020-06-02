@@ -243,7 +243,7 @@ const initCss = () => {
     setTimeout(() => {
         //设置样式
         try {
-            $('.ant-tabs.ant-tabs-card .ant-tabs-tab').css('cssText', 'padding: 0px 14px !important; margin-right: 7px !important; ');
+            $('.ant-tabs.ant-tabs-card .ant-tabs-tab').css('cssText', 'padding: 0px 12px !important; margin-right: 6px !important; ');
         } catch (error) {
             console.log(error);
         }
